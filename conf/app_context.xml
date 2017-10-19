@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+    <context:property-placeholder location="/WEB-INF/data_source.properties" ignore-unresolvable="true"/>
+
+    <bean id="mysql_data_source" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="DriverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="JdbcUrl" value="jdbc:mysql://${mysql_ip}:${mysql_port}/${mysql_database}"></property>
+        <property name="User" value="${mysql_user}"></property>
+        <property name="Password" value="${mysql_password}"></property>
+
+        <!-- protect connection from cutting off within time_out mysql definiting -->
+        <property name="maxIdleTime" value="28700"></property>
+        <property name="preferredTestQuery" value="SELECT 1;"></property>
+        <property name="idleConnectionTestPeriod" value="28000"></property>
+        <property name="testConnectionOnCheckout" value="true"></property>
+    </bean>
+
+    <bean id="user_operation" class="dao.UserOperation">
+        <property name="dataSource" ref="mysql_data_source"></property>
+    </bean>
+
+</beans>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+
+    <display-name>eshine</display-name>
+
+    <!-- spring web -->
+    <servlet>
+        <servlet-name>root</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>root</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!-- spring -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/app_context.xml</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+
+    <!-- log4j2 configuration -->
+    <listener>
+        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+    </listener>
+    <context-param>
+        <param-name>log4jConfiguration</param-name>
+        <param-value>/WEB-INF/log4j2.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>isLog4jContextSelectorNamed</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <param-name>log4jContextName</param-name>
+        <param-value>appWithJndiSelector</param-value>
+    </context-param>
+
+    <!-- Online Counter -->
+    <context-param>
+        <param-name>sessionTimeOut</param-name>
+        <param-value>86400</param-value>
+    </context-param>
+    <listener>
+        <listener-class>httpsession.OnlineCounter</listener-class>
+    </listener>
+
+    <!-- Language Property -->
+    <context-param>
+        <param-name>langResourcePath</param-name>
+        <param-value>/WEB-INF/</param-value>
+    </context-param>
+    <listener>
+        <listener-class>servletcontext.LangResourceLoadListener</listener-class>
+    </listener>
+
+    <!-- Public Argument-->
+    <context-param>
+        <param-name>LangDefault</param-name>
+        <param-value>zh</param-value>
+    </context-param>
+    <context-param>
+        <param-name>CountryDefault</param-name>
+        <param-value>CN</param-value>
+    </context-param>
+    <context-param>
+        <param-name>imgTheme</param-name>
+        <param-value>theme_live</param-value>
+    </context-param>
+    <listener>
+        <listener-class>servletrequest.PublicArgument</listener-class>
+    </listener>
+</web-app>

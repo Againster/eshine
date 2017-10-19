@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="eshine" basedir="." default="pack" >
+    <property name="bin.dir" value="bin"/>
+    <property name="src.dir" value="src"/>
+    <property name="rsrc.dir" value="rsrc"/>
+    <property name="lib.dir" value="lib" />
+    <property name="conf.dir" value="conf" />
+    <property name="log.dir" value="log" />
+    <property name="webroot.dir" value="${rsrc.dir}"/>
+    <property name="webinf.dir" value="${webroot.dir}/WEB-INF"/>
+    <property name="metainf.dir" value="${webroot.dir}/META-INF"/>
+    <property name="classes.dir" value="${bin.dir}/classes" />
+    <property name="main.class" value="controller.Main" />
+
+    <property name="proj.ver" value="1.0.0.0" />
+    <property name="tomcat.path" value="/opt/" />
+    <property name="war.dir" value="${basedir}" />
+    <property name="jar.dir" value="${basedir}" />
+    <property name="output.jar" value="${jar.dir}/${ant.project.name}-${proj.ver}.jar" />
+    <property name="output.war" value="${war.dir}/${ant.project.name}.war" />
+
+    <fileset id="compile.classpath" dir="${lib.dir}" includes="**/*.jar" />
+
+    <target name="compile">
+    	<mkdir dir="${classes.dir}" />
+    	<javac target="1.8" srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="no" verbose="yes" debug="on">
+        <classpath>
+          <fileset refid="compile.classpath" />
+        </classpath>
+        <compilerarg line="-encoding UTF-8"/>
+    	</javac>
+    </target>
+	
+    <target name="jar" depends="compile">
+      <jar destfile="${output.jar}" basedir="${classes.dir}">
+    		   <zipgroupfileset dir="${lib.dir}" includes="**/**.jar" />
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}" />
+            </manifest>
+    	</jar>
+    </target>
+
+    <target name="run" depends="jar">
+      <java jar="${output.jar}" fork="true">
+        <classpath>
+          <fileset refid="compile.classpath" />
+        </classpath>
+        <!-- sysproperty key="java.library.path" path="${lib.dir}/sigar" -->
+      </java>
+    </target>
+	
+    <target name="clean">
+      <delete verbose="true" includeemptydirs="true">
+        <fileset dir="${classes.dir}" />
+        <file name="${output.war}" />
+        <file name="${output.jar}" />
+    	</delete>
+    </target>
+
+    <target name="pack" depends="compile">
+      <war destfile="${output.war}" webxml="${conf.dir}/web.xml" compress="true">
+        <classes dir="${classes.dir}" />
+        <lib dir="${lib.dir}" />
+        <zipfileset dir="${webroot.dir}" dirmode="755" filemode="644" />
+        <zipfileset dir="${conf.dir}" prefix="WEB-INF" />
+        <zipfileset dir="${log.dir}" prefix="log"/>
+      </war>
+    </target>
+
+    <target name="deploy" depends="pack">
+      <copy file="${output.war}" todir="${tomcat.path}/webapps/" />
+    </target>
+</project>

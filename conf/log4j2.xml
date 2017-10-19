@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Configuration>
+    <Properties>
+    </Properties>
+
+    <Appenders>
+        <RollingFile name="error"
+                     filename="${web:rootDir}/log/error.log"
+                     filePattern="${web:rootDir}/log/error_%d{COMPACT}_%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d [%p] %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="50 MB"/>
+            </Policies>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+
+        <Logger name="error" level="info" additivity="true">
+            <AppenderRef ref="error"/>
+        </Logger>
+
+        <Root level="error">
+        </Root>
+    </Loggers>
+</Configuration>
